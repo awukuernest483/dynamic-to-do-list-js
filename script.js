@@ -1,18 +1,33 @@
 // Wait for the DOM to fully load before running the script
-document.addEventListener('DOMContentLoaded', () => { 
+document.addEventListener('DOMContentLoaded', () => {   
 
     // Select DOM elements
     const addButton = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
 
+    function loadTasks() {
+        const storedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        storedTasks.forEach(taskText => addTask(taskText, false)); // 'false' indi
+    }
     // Function to add a new task to the list
-    function addTask() {
+    function addTask(taskText, save = true) {
         const taskText = taskInput.value.trim();
+
+
+        if (save) {
+            const storedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            storedTasks.push(taskText);
+            localStorage.setItem('tasks', JSON.stringify(storedTasks));
+        }
+
+        
         if (taskText === '') {
             alert('Please enter a task.');
             return;
         }
+
+
 
         const li = document.createElement('li');
         li.textContent = taskText;
@@ -43,6 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Invoke addTask on DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', addTask);
+    document.addEventListener('DOMContentLoaded',loadTasks, addTask);
 
 });
